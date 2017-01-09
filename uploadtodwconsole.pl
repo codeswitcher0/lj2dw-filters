@@ -22,6 +22,9 @@ my $authenticcookies;
 my $cookiejar = "cookiejar.txt";
 my $lj_form_auth;
 
+my $consoleurl = "https://www.dreamwidth.org/admin/console/";
+
+
 sub arguer {
 	my $nextarg = "";
 	for my $arg (@ARGV) {
@@ -89,12 +92,10 @@ sub un_urlize {
 
 sub wget_post_to_console {
 	my $add = $_[0];
-	
-	my $url = "https://www.dreamwidth.org/admin/console/";
-	
+		
 	my $datastring = "lj_form_auth=".urlize($lj_form_auth)."&commands=".urlize($add);
 	
-	my $command = "wget -q --no-check-certificate --cookies=on --keep-session-cookies --save-cookies $cookiejar  --load-cookies $authenticcookies --header \"X-DW-Auth: cookie\" --post-data \"$datastring\" -O - $url";
+	my $command = "wget -q --no-check-certificate --cookies=on --keep-session-cookies --save-cookies $cookiejar  --load-cookies $authenticcookies --header \"X-DW-Auth: cookie\" --post-data \"$datastring\" -O - $consoleurl";
 
 #	print $command."\n";
 	#system ($command ) == 0	or die "system call to wget failed: $?";
