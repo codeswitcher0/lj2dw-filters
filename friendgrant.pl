@@ -380,14 +380,8 @@ sub make_DWfiltermap {
 		open ( FILTERMAP, "<", $filtermap );
 		while (my $line = <FILTERMAP>) {
 #			print "Filtermap line: $line\n";
-			#check first line for username
+			# Ignore comments
 			if ($line =~ /^#(.*)$/) {
-				if ( !($1 eq $username) ) {
-					# cache is for the wrong user, abort using cache
-					close FILTERMAP;
-					%filterhash = ();
-					last;
-				}
 				next;
 			}
 			#explode line
