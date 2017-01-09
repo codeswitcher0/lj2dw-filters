@@ -83,7 +83,9 @@ sub un_urlize {
 	return $rv;
 }
 ##################
-my $add = "";
+
+
+
 
 sub wget_post_to_console {
 	my $add = $_[0];
