@@ -1,4 +1,3 @@
-username codeswitcher
 authenticcookies cookies_2017_01_09.txt
 cookiejar wget_cookies.txt
 filtermap filtermap.txt
