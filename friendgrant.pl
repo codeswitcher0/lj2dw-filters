@@ -274,7 +274,6 @@ sub extract_LJfiltermemberships_in {
 #
 #	print "manage_circle add_access USERNAME ",  join(',', @filterarray), "\n";
 
-#	my %returnarray =  ( $username => @filterarray );
 	return @filterarray;
 
 # manage_circle add_access <username> [groups]
