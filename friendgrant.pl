@@ -12,7 +12,7 @@ my $flj;
 my $fdw;
 my $configfile;
 
-my $username;
+#my $username;
 my $authenticcookies;
 my $cookiejar = "cookiejar.txt";
 my $filtermap;
@@ -23,9 +23,7 @@ main();
 sub arguer {
 	my $nextarg = "";
 	for my $arg (@ARGV) {
-		if ($nextarg eq "username") {
-			$username = $arg;	
-		} elsif ($nextarg eq "flj") {
+		if  ($nextarg eq "flj") {
 			$flj = $arg;	
 		} elsif ($nextarg eq "fdw") {
 			$fdw = $arg;	
@@ -34,9 +32,7 @@ sub arguer {
 		}
 		$nextarg = "";
 		
-		if ($arg =~ /u(|ser(|name))/ ) {
-			$nextarg = "username";
-		} elsif ($arg =~ /^\-flj$/ ) {
+		if ($arg =~ /^\-flj$/ ) {
 			$nextarg = "flj";
 		} elsif ($arg =~ /^\-fdw$/ ) {
 			$nextarg = "fdw";
@@ -48,9 +44,7 @@ sub arguer {
 	open(CONFIG, "<", "$configfile") or die "Couldn't find configuration file \'$configfile\'.\n";
 	while (my $line = <CONFIG>){
 		(my $field, my $value) = split /\s/, $line;
-		if ($field eq "username") {
-			$username = $value;	
-		} elsif ($field eq "authenticcookies") {
+		if ($field eq "authenticcookies") {
 			$authenticcookies = $value;	
 		} elsif ($field eq "cookiejar") {
 			$cookiejar = $value;	
@@ -67,7 +61,6 @@ sub arguer {
 		$fdw = $flj;
 	}
 	
-	if ($username eq '') { die "No username specified. Dying.\n" ; }
 	if ($authenticcookies eq '' || !(-f $authenticcookies)) { die "Authenticated cookie file \'$authenticcookies\' not found. Dying.\n"; }
 	if ($cookiejar eq '') {
 		warn "Cookiejar not specified, defaulting to \'cookiejar.txt\'.\n";
@@ -423,5 +416,9 @@ sub main {
 #	print "$_ $filterhash{$_}\n" for (keys %filterhash);
 	@filtermemberships = map_LJmemberships_toDWfilterids @filtermemberships;
 #	print join(',',@filtermemberships);
-	print "manage_circle add_access $fdw ", join(',',@filtermemberships), "\n";
+	if (@filtermemberships) {
+		print "manage_circle add_access $fdw ", join(',',@filtermemberships), "\n";
+	} else {
+		print "User $fdw not a member of any filters on LJ.\n";
+	}
 }
