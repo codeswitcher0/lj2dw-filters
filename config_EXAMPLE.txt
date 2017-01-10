@@ -1,4 +1,3 @@
 authenticcookies cookies_2017_01_09.txt
 cookiejar wget_cookies.txt
 filtermap filtermap.txt
-lj_form_auth c0:1483948800:1817:86400:VsBwmNM5rJ-27424-2739:8439cee83cca4956d5373d2719fcc6b7

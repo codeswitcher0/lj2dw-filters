@@ -24,7 +24,6 @@ my $lj_form_auth;
 
 my $consoleurl = "https://www.dreamwidth.org/admin/console/";
 
-
 sub arguer {
 	my $nextarg = "";
 	for my $arg (@ARGV) {
@@ -87,8 +86,81 @@ sub un_urlize {
 }
 ##################
 
+sub wget_DWconsolepage {
+	#takes nothing, uses $consoleurl global
+	#returns a webpage as a string
+	
+	my $commandstring = "wget -q --no-check-certificate --cookies=on --keep-session-cookies --save-cookies $cookiejar  --load-cookies $authenticcookies --header \"X-LJ-Auth: cookie\"  -O - $consoleurl";
+	
+#	print $commandstring."\n";
+	return `$commandstring `;
+} #takes nothing, uses global $cosoleurl, returns the webpage showing the console form as a string
 
+sub find_DWconsoleform_in {
+	# takes a whole HTML file as a string, 
+	# returns just the line with the useful content
+	for my $line (split /^/, $_[0]) {
+		# Test for console form relevant field (DW)
+		if ($line =~ /<input type='hidden' name=\"lj_form_auth\"/) { 
+#			print "DW console form line found!\n";
+			return $line;
+		}
+	}
+} 	# Takes a whole HTML file as a string, returns just the line with the DW console form field specified.
 
+sub tokenizeHTML {
+	# Takes a string of HTML
+	# Returns an array of strings, consisting of the input string
+	# sliced into tokens on each HTML entity edge (either < or >).
+	# Thus 
+	# <a href="http://www.example.com">This is an example</a> 
+	# becomes
+	# ('a href="http://www.example.com"', 'This is an example','/a')
+
+#	print "tokenizeHTML called!\n";
+	my $arg = $_[0];
+#	print $arg;
+	my $token = "";
+	my @tokenarray;
+	for my $i (1 .. length $arg) {
+#		print ".";
+		my $char = substr($arg, $i-1, 1);
+#		print $char;
+		if ($char eq "<" || $char eq ">") {
+#			print "token edge found!";
+#			$tokenarray[++$#tokenarray] = $token;
+			push @tokenarray, $token;
+			$token = "";
+		} else {
+			$token .= $char;
+		}
+	}
+
+#	print "Line tokenized! $#tokenarray tokens!\n";
+#	print join("\n", @tokenarray), "\n";
+
+	return @tokenarray;
+} 	# Takes a string of HTML, returns an array of strings, consisting of the input string sliced into tokens on each HTML entity edge (either < or >).
+
+sub extract_ljformauth {
+	# Takes a tokenized content string from an DW console page 
+	# (as returned by find_DWconsoleform_in and then tokenized by tokenizeHTML), 
+	# Returns the lj_form_auth string.
+
+#	print "extractfilterids called!\n";
+	my @tokenarray = @_;
+	
+	#	loop over the array, looking for the start of our tokens of interest
+
+####  TRUE=1, FALSE=0
+	# Get the filter list
+	for my $token (@tokenarray) {
+		if ($token =~ /^input type\=\'hidden\' name\=\"lj_form_auth\" value\=\"(.*)\" \/$/) { 
+			return $1;
+			last;
+		}
+	}
+} # Takes a tokenized content string from an DW console page (as returned by find_DWconsoleform_in and then tokenized by tokenizeHTML), returns the lj_form_auth string.
 
 sub wget_post_to_console {
 	my $add = $_[0];
@@ -102,6 +174,13 @@ sub wget_post_to_console {
 	my $result = `$command` ;
 
 }
+
+# Get the lj_form_auth token
+
+my $consolepage = wget_DWconsolepage ;
+$lj_form_auth = extract_ljformauth(tokenizeHTML(find_DWconsoleform_in($consolepage)));
+
+($lj_form_auth =~ /^c0\:/ ) or die "Value of lj_form_auth doesn't look like a valid token: \n \"$lj_form_auth\".  \n Dying.\n";
 
 # DO THE THING
 
