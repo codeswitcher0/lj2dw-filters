@@ -116,3 +116,7 @@ The program will only do three friends in succession, then pause to wait for the
 • This system of scripts only adds permissions, it doesn't ever take them away.  Thus it does not fully sync filters, it only grants matching permissions.
 
 • At this moment, all calls wget makes to DW use the awful --no-check-certificate option, which is a security problem if you're worried MITM attacks.  Your machine, if it has a newer version of wget installed, might not need that option, and you can delete it.
+
+# License
+
+Haven't figured this out yet.  It's mine, but for now you have my permission to use it to import your journal filter settings.
