@@ -79,7 +79,7 @@ Example:
 
 ## batchfriendgrant.pl
 
-If you keep a list of who of your LJ friends has a DW account, and what each LJ friend's DW account name is, batchfriendgrant.pl can read that file, and send each line to friendgrant.pl, and it will generate a list of console commands, to grant each user the same filter access on DW as they had on LJ.
+If you keep a list of who of your LJ friends has a DW account, and what each LJ friend's DW account name is, batchfriendgrant.pl can read that file, and send each line to friendgrant.pl, and it will generate a list of console commands, to grant each user the same filter access on DW as they had on LJ.  This makes it easy to do a whole lot of friends at once, and also to keep track of which ones you've done.
 
 The batch file has to have one LJ/DW username correspondence pair per line, the LJ username first, then the DW username separated by a pipe, like so:
 
@@ -111,11 +111,19 @@ The important part in there is that is the word "Done.", which indicates success
 
 The program will only do three friends in succession, then pause to wait for the user to press return.  This is to allow you to catch errors and abort (control-C) in what could be a catastrophic process, if you've done it wrong and it applies to a huge number of accounts.
 
+To call:  
+./uploadtodwconsole.pl -batch consolecommandfile -config configfile
+
+Example:
+./uploadtodwconsole.pl -batch addmyfriends.txt -config config.txt
+
 # You Should Know
 
 • This system of scripts only adds permissions, it doesn't ever take them away.  Thus it does not fully sync filters, it only grants matching permissions.
 
 • At this moment, all calls wget makes to DW use the awful --no-check-certificate option, which is a security problem if you're worried MITM attacks.  Your machine, if it has a newer version of wget installed, might not need that option, and you can delete it.
+
+• Don't be confused: the batch file that batchfriendgrant.pl uses is not the same batch file that uploadtodwconsole.pl uses.  The former is your list of username pairs (LJ|DW) of friends you want to grant permissions to on DW.  The latter is the batch of commands that batchfriendgrant.pl makes.  (You could also make such a thing by hand if you wanted to.  It will throw any commands you want against the DW server, valid or not.)
 
 # License
 
